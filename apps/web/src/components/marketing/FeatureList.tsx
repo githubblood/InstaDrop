@@ -18,8 +18,8 @@ interface Feature {
 const FEATURES: Feature[] = [
   {
     icon: Sparkles,
-    title: "Original quality",
-    description: "Photos and videos download at their full source resolution. Nothing is re-compressed or resized.",
+    title: "No added compression",
+    description: "Photos and videos are the files Instagram provides. We don't re-compress or resize them.",
   },
   {
     icon: UserX,

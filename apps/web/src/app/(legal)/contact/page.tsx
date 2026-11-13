@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { Mail } from "lucide-react";
 import { LegalPageShell } from "@/components/legal/LegalPageShell";
 import { LegalSection } from "@/components/legal/LegalSection";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { siteConfig } from "@/lib/siteConfig";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: `Get in touch with the ${siteConfig.name} team.`,
-  alternates: { canonical: "/contact" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Contact Us",
+  description: `Email ${siteConfig.name} about a broken link, a failed download, a copyright concern or a feature idea.`,
+  path: "/contact",
+});
 
 // Placeholder inbox - flagged here rather than silently treated as final:
 // confirm this is a real, monitored address before launch.
@@ -30,8 +31,7 @@ export default function ContactPage() {
       <LegalPageShell sections={SECTIONS}>
         <LegalSection id="how-to-reach-us" title="How to Reach Us">
           <p>
-            The fastest way to reach us is by email. We read everything that comes in,
-            even if a reply takes a little while.
+            You can contact us by email at the address below.
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
@@ -50,8 +50,15 @@ export default function ContactPage() {
             <li className="list-disc">General questions about how ReelSaveNow works, or a feature you&apos;d like to see.</li>
           </ul>
           <p>
-            We don&apos;t currently offer live chat or a ticketing system — email is
-            genuinely the way to reach a person, not a queue.
+            If a link or download isn&apos;t working, the{" "}
+            <a href="/support#troubleshooting" className="text-primary underline underline-offset-2">
+              troubleshooting guide
+            </a>{" "}
+            on our Support page may solve it faster.
+          </p>
+          <p>
+            We don&apos;t currently offer live chat or a ticketing system; email is the only
+            contact option.
           </p>
         </LegalSection>
 
@@ -59,10 +66,10 @@ export default function ContactPage() {
           <p>
             If you believe content accessible through ReelSaveNow infringes your copyright,
             email us with a description of the content and a link to the original
-            Instagram post. Since ReelSaveNow never stores media on its own servers,
-            removing the content from Instagram itself is the most direct way to stop it
-            from being accessible here — but we&apos;re glad to help point you in the
-            right direction if you&apos;re not sure how.
+            Instagram post. ReelSaveNow doesn&apos;t control the original Instagram post and
+            can&apos;t remove it from Instagram. To have it taken down, report it to Instagram
+            or contact the account owner. If you&apos;re not sure how, you can email the
+            address shown above.
           </p>
         </LegalSection>
       </LegalPageShell>

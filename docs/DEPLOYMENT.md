@@ -2,13 +2,43 @@
 
 ## Environments
 
-| App | Host | How it builds |
+| App | Host (as observed from outside — see below) | Address |
 |---|---|---|
-| `apps/web` | **Netlify** | pnpm workspace build from the repo root, Next.js via Netlify's OpenNext adapter |
-| `apps/api` | **Railway** | Docker, built from the **root `Dockerfile`** (auto-detected - see below) |
+| `apps/web` | **AWS Amplify Hosting** (served through CloudFront) | `https://www.reelsavenow.com` — the canonical host. Amplify's default domain `https://master.d2tiycb287o9m1.amplifyapp.com` also serves the site. |
+| `apps/api` | **AWS EC2** (us-east-1), behind a Caddy reverse proxy | `https://api.reelsavenow.com` |
 | Postgres (Supabase) | — | **Not used.** There is no database; the unwired request-log scaffold was removed 2026-10-16, see [DATABASE.md](./DATABASE.md) |
 
-History: the docs previously described Vercel (frontend) and Render (API, switched from Railway on 2026-08-18). The confirmed setup as of 2026-10-14 is Netlify + Railway. `render.yaml` is still in the repo but **unused** — kept only because removing deploy config is the owner's call, and recommended for removal. Nothing in the code is host-specific: the same Dockerfile runs on any container host.
+History: Vercel → Netlify for the frontend, Render → Railway for the API, then both moved to AWS around 2026-10-29/30. The **Frontend — Netlify** and **API — Railway** sections below describe that earlier setup; their environment variables still apply, but the platform steps do not. `render.yaml` is still in the repo but **unused** — kept only because removing deploy config is the owner's call, and recommended for removal. Nothing in the code is host-specific: the same Dockerfile runs on any container host.
+
+## Production on AWS
+
+### Observed from outside (2026-11-03)
+
+Everything in this table comes from public DNS lookups and HTTP requests. None of it was read from the Amplify console, the EC2 instance or GoDaddy, so it describes behaviour, not configuration.
+
+| What | Observed |
+|---|---|
+| `www.reelsavenow.com` | CNAME → `d12q26sf80eksx.cloudfront.net`; responses carry `x-powered-by: Next.js` and CloudFront headers. Amazon certificate for `*.reelsavenow.com` and `reelsavenow.com`, valid until 2027-05-16, TLS 1.3, HSTS (`max-age=31536000`). `http://` answers 301 to `https://` with the path kept. `/`, `/support`, `/contact`, `/privacy-policy`, `/terms`, `/robots.txt`, `/sitemap.xml`, `/opengraph-image` and `/manifest.webmanifest` all return 200; `/private` returns 200 with `noindex, nofollow`. |
+| Canonical host in the live pages | Canonicals, the sitemap, the robots.txt `Sitemap:` line and JSON-LD all name `https://master.d2tiycb287o9m1.amplifyapp.com`, which is what a build with `NEXT_PUBLIC_SITE_URL` set to that address produces. The variable's value itself was not seen. |
+| `reelsavenow.com` (apex) | A → `3.33.251.168`, `15.197.225.128` (GoDaddy's forwarding service). Answers 301 to `http://www.reelsavenow.com` and **drops the path**: `/support`, `/robots.txt` and the `reelsavenow.com/<instagram-url>` shortcut return 404. |
+| `api.reelsavenow.com` | A → `54.226.114.204` (`ec2-54-226-114-204.compute-1.amazonaws.com`); `Via: 1.1 Caddy`; Let's Encrypt certificate. `/health` reports the deployed commit. CORS preflights from `https://www.reelsavenow.com` and from the Amplify domain are both allowed; a real `/fetch`, `/download` and `/download?format=mp3` sent with the www origin all succeeded. |
+| Nameservers and mail | GoDaddy (`ns43`/`ns44.domaincontrol.com`). No MX record is published for `reelsavenow.com`, and inbound email delivery to `support@reelsavenow.com` has not been verified. |
+
+### Not verified internally
+
+Nobody has recorded these from the consoles yet: the Amplify app's build settings (there is no `amplify.yml` in the repo), the exact values of its environment variables, its custom-domain setup (including whether the apex is attached), the API's exact `CORS_ORIGIN` value, how the EC2 instance runs and restarts the API, whether `54.226.114.204` is an Elastic IP, the Caddy configuration, and the full GoDaddy zone (only common record names were looked up; the certificate-validation CNAME's name is unknown from outside).
+
+### Settings production needs
+
+| Where | Variable | Value | Status (from outside) |
+|---|---|---|---|
+| Amplify environment variables | `NEXT_PUBLIC_SITE_URL` | `https://www.reelsavenow.com` — never the `amplifyapp.com` address, or canonicals, the sitemap, robots.txt and JSON-LD point search engines there. Built into the bundle, so a change needs a rebuild. | Not yet: live pages still name the Amplify address |
+| Amplify environment variables | `NEXT_PUBLIC_API_BASE_URL` | `https://api.reelsavenow.com/api/v1` | Matches what the live bundle calls |
+| API host | `CORS_ORIGIN` | Must include `https://www.reelsavenow.com`; without it the browser blocks every fetch and download on the real domain while the site itself loads normally. The Amplify origin can stay alongside it. | Matches: www is allowed |
+
+### The apex domain
+
+The apex should answer with a 301 to `https://www.reelsavenow.com` **keeping the path**. GoDaddy's forwarding drops the path, and GoDaddy DNS has no ALIAS record to point the apex at Amplify. Changing this means a DNS change that has not been made or approved; whatever is chosen, Amplify's certificate-validation CNAME must stay in place or the certificate won't renew.
 
 ## Frontend — Netlify
 

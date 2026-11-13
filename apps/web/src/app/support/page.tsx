@@ -20,13 +20,14 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { reveal } from "@/components/motion/reveal";
 import { Card } from "@/components/ui/Card";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { siteConfig } from "@/lib/siteConfig";
 
-export const metadata: Metadata = {
-  title: "Support",
-  description: `What ${siteConfig.name} can download, how to use it on a phone or a computer, and what to do when a link or download doesn't work.`,
-  alternates: { canonical: "/support" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Instagram Reel Not Downloading? Fixes & Help",
+  description: `Instagram Reels downloader not working? What each ${siteConfig.name} error message means, why a Reel link fails or saves without sound, and how to fix it.`,
+  path: "/support",
+});
 
 /*
  * Everything on this page describes what the app actually does today - the
@@ -91,8 +92,8 @@ const DOWNLOADS: Feature[] = [
 const PROMISES: Feature[] = [
   {
     icon: Sparkles,
-    title: "Original quality",
-    body: "You get the same file Instagram serves for the post, at the highest quality Instagram makes available for it. We don't re-compress, resize or watermark photos or videos. The one conversion is Download Audio (MP3), which turns a video's sound into an MP3.",
+    title: "No added compression",
+    body: "You get the file Instagram provides for the post. We don't re-compress, resize or watermark photos or videos. The one conversion is Download Audio (MP3), which turns a video's sound into an MP3.",
   },
   {
     icon: UserX,
@@ -198,6 +199,16 @@ const PROBLEMS: Problem[] = [
     ),
   },
   {
+    title: "It's taking a long time",
+    message: "This is taking longer than usual. Please try again in a moment.",
+    fix: (
+      <>
+        Some posts take a few seconds longer while the site tries a second way to fetch them. If this message
+        appears, wait a moment and try again.
+      </>
+    ),
+  },
+  {
     title: "The video downloaded without sound",
     message: null,
     fix: (
@@ -226,11 +237,13 @@ const PROBLEMS: Problem[] = [
   },
 ];
 
+// Troubleshooting leads: most visitors arrive here because something didn't
+// work, so the fixes come before the overview of what the site can do.
 const SECTIONS = [
+  { id: "troubleshooting", label: "Troubleshooting" },
   { id: "downloads", label: "What you can download" },
   { id: "how-it-works", label: "Quality and privacy" },
   { id: "devices", label: "Phones and computers" },
-  { id: "troubleshooting", label: "Troubleshooting" },
 ];
 
 function Code({ children }: { children: ReactNode }) {
@@ -291,11 +304,11 @@ export default function SupportPage() {
               Support
             </span>
             <h1 className="text-h1 sm:text-[clamp(2.25rem,1.6rem+2vw,3.25rem)]">
-              How can we <span className="text-brand-gradient">help?</span>
+              Reel not downloading? <span className="text-brand-gradient">We can help.</span>
             </h1>
             <p className="max-w-2xl text-lead text-muted-foreground">
-              Everything {siteConfig.name} can download, how to use it on any device, and what to try when a link
-              or a download doesn&apos;t work.
+              Find the message you&apos;re seeing and what to do about it — plus everything {siteConfig.name} can
+              download and how to use it on a phone or computer.
             </p>
           </div>
 
@@ -310,6 +323,31 @@ export default function SupportPage() {
               </a>
             ))}
           </nav>
+        </section>
+
+        <section aria-labelledby="troubleshooting-heading" id="troubleshooting" className="container scroll-mt-20 py-12 sm:py-14">
+          <SectionHeading
+            id="troubleshooting-heading"
+            eyebrow="Troubleshooting"
+            title="Instagram Reels downloader not working?"
+            intro="The message the site shows, what it means, and what to try."
+          />
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:gap-8">
+            {PROBLEMS.map((problem, index) => (
+              <Card key={problem.title} {...reveal((index % 2) + 1)} interactive={false} className="flex min-w-0 flex-col gap-3 p-6">
+                <div className="flex items-start gap-3">
+                  <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <h3 className="text-h3">{problem.title}</h3>
+                </div>
+                {problem.message ? (
+                  <p className="rounded-md border border-border bg-muted/60 px-3 py-2 text-sm text-foreground/85">
+                    <span className="sr-only">The site says: </span>&ldquo;{problem.message}&rdquo;
+                  </p>
+                ) : null}
+                <p className="text-body text-muted-foreground">{problem.fix}</p>
+              </Card>
+            ))}
+          </div>
         </section>
 
         <section aria-labelledby="downloads-heading" id="downloads" className="container scroll-mt-20 py-12 sm:py-14">
@@ -375,31 +413,6 @@ export default function SupportPage() {
           </div>
         </section>
 
-        <section aria-labelledby="troubleshooting-heading" id="troubleshooting" className="container scroll-mt-20 py-12 sm:py-14">
-          <SectionHeading
-            id="troubleshooting-heading"
-            eyebrow="Troubleshooting"
-            title="When something doesn't work"
-            intro="The message the site shows, what it means, and what to try."
-          />
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:gap-8">
-            {PROBLEMS.map((problem, index) => (
-              <Card key={problem.title} {...reveal((index % 2) + 1)} interactive={false} className="flex min-w-0 flex-col gap-3 p-6">
-                <div className="flex items-start gap-3">
-                  <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-                  <h3 className="text-h3">{problem.title}</h3>
-                </div>
-                {problem.message ? (
-                  <p className="rounded-md border border-border bg-muted/60 px-3 py-2 text-sm text-foreground/85">
-                    <span className="sr-only">The site says: </span>&ldquo;{problem.message}&rdquo;
-                  </p>
-                ) : null}
-                <p className="text-body text-muted-foreground">{problem.fix}</p>
-              </Card>
-            ))}
-          </div>
-        </section>
-
         <section aria-labelledby="still-stuck-heading" className="container pb-16 pt-6 sm:pb-20">
           <div
             {...reveal()}
@@ -423,7 +436,7 @@ export default function SupportPage() {
                 href="/"
                 className="inline-flex h-11 items-center rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition-colors duration-150 ease-out hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                Back to the downloader
+                Back to the Reels downloader
               </Link>
             </div>
           </div>

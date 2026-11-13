@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 const TRUST_ITEMS = [
   "No login required",
   "No watermark",
-  "Original quality",
+  "Instagram-provided files",
   "Photos · Reels · Videos · Carousels",
 ];
 

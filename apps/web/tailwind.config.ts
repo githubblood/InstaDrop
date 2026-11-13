@@ -183,6 +183,19 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        // The keepMounted variant of AccordionContent (the FAQ). Its closed
+        // panels stay in the DOM, which leaves Radix nothing sensible to
+        // measure, so the row animates from 0fr to 1fr instead - the same
+        // height-to-auto effect without a measured value. Closing keeps the
+        // text visible until the row has collapsed, then hides it.
+        "accordion-open": {
+          from: { gridTemplateRows: "0fr" },
+          to: { gridTemplateRows: "1fr" },
+        },
+        "accordion-close": {
+          from: { gridTemplateRows: "1fr", visibility: "visible" },
+          to: { gridTemplateRows: "0fr", visibility: "hidden" },
+        },
         // HowItWorks' connector dots only - explicitly NOT used on the
         // hero glow, which stays fully static by earlier decision. Low
         // amplitude (0.6->1 opacity, 1->1.15 scale) since these are a
@@ -207,6 +220,8 @@ const config: Config = {
         shimmer: "shimmer 2s infinite linear",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-in",
+        "accordion-open": "accordion-open 0.2s ease-out",
+        "accordion-close": "accordion-close 0.2s ease-in",
         "dot-pulse": "dot-pulse 2.5s ease-in-out infinite",
       },
     },

@@ -53,27 +53,21 @@ export function DownloaderPage({ initialUrl, children }: DownloaderPageProps) {
 
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground/80 shadow-sm">
             <span aria-hidden="true" className="h-2 w-2 rounded-full bg-brand-gradient" />
-            Free Instagram downloader
+            Free Instagram Reels downloader
           </span>
 
           {/* Kept as hand-written JSX rather than sourced from
-              siteConfig.tagline - this heading needs "original quality"
+              siteConfig.tagline - this heading needs "Instagram Reels"
               styled in its own gradient span below, which a single plain
               string can't express. If siteConfig.tagline ever changes,
-              this heading needs a manual matching update.
-
-              The second line keeps "in original quality" together from sm:
-              up; it used to break as "...videos in / original quality". */}
+              this heading needs a manual matching update. */}
           <h1 className="max-w-4xl text-display">
-            Download Instagram photos, reels &amp; videos{" "}
-            <span className="sm:block">
-              in <span className="text-brand-gradient">original quality</span>
-            </span>
+            Download <span className="text-brand-gradient">Instagram Reels</span>, videos &amp; photos
           </h1>
 
           <p className="max-w-2xl text-lead text-muted-foreground">
-            Paste a public Instagram link and get a direct, high-resolution download —
-            no account required.
+            Paste a public Reel, video or photo link and save it straight to your device —
+            no app, no account.
           </p>
 
           <div className="w-full max-w-3xl">

@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { LegalPageShell } from "@/components/legal/LegalPageShell";
 import { LegalSection } from "@/components/legal/LegalSection";
 import { formatLegalDate, TERMS_UPDATED } from "@/lib/legalDates";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { siteConfig } from "@/lib/siteConfig";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Terms of Service",
   description: `The terms that govern your use of ${siteConfig.name}.`,
-  alternates: { canonical: "/terms" },
-};
+  path: "/terms",
+});
 
 // Shared with sitemap.ts, which reports it as this page's <lastmod>.
 const LAST_UPDATED = formatLegalDate(TERMS_UPDATED);

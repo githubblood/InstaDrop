@@ -15,20 +15,32 @@ function headings(level: number) {
 describe("Support page", () => {
   it("explains every service and feature it was asked to cover", () => {
     render(<SupportPage />);
-    expect(headings(1)).toEqual(["How can we help?"]);
+    expect(headings(1)).toEqual(["Reel not downloading? We can help."]);
     expect(headings(3)).toEqual(
       expect.arrayContaining([
         "Instagram Reels",
         "Photos",
         "Videos",
         "Carousels",
-        "Original quality",
+        "No added compression",
         "No login required",
         "Phones and tablets",
         "Laptops and desktops",
       ])
     );
-    expect(headings(2)).toContain("When something doesn't work");
+    expect(headings(2)).toContain("Instagram Reels downloader not working?");
+  });
+
+  // Most visitors arrive because something failed, so the fixes come first,
+  // and the section links follow the page.
+  it("puts Troubleshooting first, in the page and in its section links", () => {
+    const { container } = render(<SupportPage />);
+    const sectionIds = Array.from(container.querySelectorAll("main section[id]")).map((section) => section.id);
+    expect(sectionIds).toEqual(["troubleshooting", "downloads", "how-it-works", "devices"]);
+    const anchorIds = Array.from(container.querySelectorAll('nav[aria-label="On this page"] a')).map((anchor) =>
+      anchor.getAttribute("href")!.slice(1)
+    );
+    expect(anchorIds).toEqual(sectionIds);
   });
 
   // Troubleshooting quotes the messages the site really shows, so a reader
@@ -40,6 +52,7 @@ describe("Support page", () => {
       "This content is from a private Instagram account and cannot be processed.",
       "This post could not be found. It may have been deleted or the link is incorrect.",
       "Could not download this media right now. Please try again.",
+      "This is taking longer than usual. Please try again in a moment.",
     ]) {
       expect(container.textContent).toContain(message);
     }
@@ -61,6 +74,6 @@ describe("Support page", () => {
     }
     expect(anchors).toHaveLength(4);
     expect(screen.getByRole("link", { name: /Contact us/ }).getAttribute("href")).toBe("/contact");
-    expect(screen.getByRole("link", { name: "Back to the downloader" }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: "Back to the Reels downloader" }).getAttribute("href")).toBe("/");
   });
 });
