@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/Accordion";
 import { FAQ_ENTRIES } from "@/components/marketing/faqData";
 import { reveal } from "@/components/motion/ScrollReveal";
@@ -24,11 +26,24 @@ export function Faq() {
           {FAQ_ENTRIES.map((entry) => (
             <AccordionItem key={entry.question} value={entry.question}>
               <AccordionTrigger>{entry.question}</AccordionTrigger>
-              <AccordionContent>{entry.answer}</AccordionContent>
+              {/* keepMounted: every answer is in the server-rendered HTML,
+                  matching the FAQPage JSON-LD built from the same list. */}
+              <AccordionContent keepMounted>{entry.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
       </div>
+
+      <p {...reveal(2)} className="mt-6 text-center text-sm text-muted-foreground">
+        Reel not downloading?{" "}
+        <Link
+          href="/support#troubleshooting"
+          className="inline-flex min-h-11 items-center gap-1 font-medium text-foreground underline-offset-4 transition-colors duration-150 ease-out hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          See the troubleshooting guide
+          <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+      </p>
     </section>
   );
 }

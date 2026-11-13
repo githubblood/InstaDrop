@@ -26,7 +26,7 @@ const STEPS: Step[] = [
   {
     icon: Download,
     title: "Download",
-    description: "One tap saves the original file straight to your device — or just a Reel's audio, as an MP3.",
+    description: "One tap saves the file straight to your device — or just a Reel's audio, as an MP3.",
   },
 ];
 
@@ -75,7 +75,7 @@ export function HowItWorks() {
           How it <span className="text-brand-gradient">works</span>
         </h2>
         <p className="max-w-md text-body text-muted-foreground">
-          Three simple steps to download Instagram content in original quality.
+          Three simple steps to download any public Instagram Reel, video or photo.
         </p>
       </div>
 
@@ -167,7 +167,7 @@ export function HowItWorks() {
           </span>
           <div className="flex flex-col">
             <p className="text-body font-semibold">No login required. No watermark.</p>
-            <p className="text-sm text-muted-foreground">Original quality, every time.</p>
+            <p className="text-sm text-muted-foreground">Photos and videos as Instagram provides them — no added compression.</p>
           </div>
         </div>
         <Button onClick={scrollToInput} className="w-full rounded-full px-6 sm:w-auto">

@@ -44,10 +44,39 @@ export const AccordionTrigger = forwardRef<
   );
 });
 
+interface AccordionContentProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Content> {
+  /**
+   * Render the panel's content even while it is closed, hidden from view
+   * and from assistive technology, so it is in the server-rendered HTML.
+   * Radix otherwise leaves a closed panel empty, which made the FAQ's
+   * answers exist only in its JSON-LD.
+   */
+  keepMounted?: boolean;
+}
+
 export const AccordionContent = forwardRef<
   ElementRef<typeof AccordionPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
->(function AccordionContent({ className, children, ...props }, ref) {
+  AccordionContentProps
+>(function AccordionContent({ className, children, keepMounted, ...props }, ref) {
+  if (keepMounted) {
+    return (
+      <AccordionPrimitive.Content
+        ref={ref}
+        forceMount
+        // A closed panel is a 0fr row and visibility:hidden, which keeps it
+        // out of the accessibility tree and the tab order just as an
+        // unmounted one was. Radix suppresses the animation on first render,
+        // so closed panels start collapsed without playing the close.
+        className="grid text-body data-[state=closed]:invisible data-[state=closed]:grid-rows-[0fr] data-[state=open]:grid-rows-[1fr] data-[state=closed]:animate-accordion-close data-[state=open]:animate-accordion-open"
+        {...props}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className={cn("pb-5 pr-9 text-muted-foreground", className)}>{children}</div>
+        </div>
+      </AccordionPrimitive.Content>
+    );
+  }
+
   return (
     <AccordionPrimitive.Content
       ref={ref}

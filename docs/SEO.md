@@ -16,7 +16,27 @@ SEO is built in from day one, not an afterthought.
 
 ## Site config
 
-`apps/web/src/lib/siteConfig.ts` is the single source of truth for the site's branding — canonical URL (`NEXT_PUBLIC_SITE_URL`, defaults to `https://reelsavenow.com`), `name`, `title`, `description`, and `tagline`. See [ARCHITECTURE.md](./ARCHITECTURE.md#branding-single-source-of-truth-siteconfigts) for the full list of consumers and the two deliberate exceptions.
+`apps/web/src/lib/siteConfig.ts` is the single source of truth for the site's branding — canonical URL (`NEXT_PUBLIC_SITE_URL`, defaults to `https://www.reelsavenow.com`), `name`, `title`, `appName`, `description`, and `tagline`. See [ARCHITECTURE.md](./ARCHITECTURE.md#branding-single-source-of-truth-siteconfigts) for the full list of consumers and the two deliberate exceptions.
+
+## Keyword map — 2026-11-03
+
+Each page targets one search intent, so pages don't compete for the same terms.
+
+| Page | Primary term | Secondary terms | Where they appear |
+|---|---|---|---|
+| `/` | Instagram Reels Downloader | download Instagram Reels, Instagram Reels download, Reels video downloader, Instagram video downloader, free Instagram Reels downloader | `<title>`, meta description, hero badge, H1, hero intro, How it works intro, FAQ |
+| `/support` | Instagram Reels downloader not working | Reel download failed, Instagram downloader error, Reel link not working | `<title>`, meta description, H1, the Troubleshooting H2 (now the first section) |
+| `/contact`, `/privacy-policy`, `/terms` | — | — | No commercial keywords on legal pages |
+
+Decisions, so they aren't re-litigated:
+
+- **Canonical host is `www`** (`https://www.reelsavenow.com`). The apex is on GoDaddy DNS, which can't point it at Amplify; see [DEPLOYMENT.md](./DEPLOYMENT.md).
+- **`/private` stays `noindex`, disallowed in robots.txt and unlinked.** It asks for an Instagram session cookie, the pattern account-hijacking pages use; ranking it for "download private Instagram videos" would draw the wrong visitors and risk the whole domain being flagged. The homepage FAQ says the downloader works with public posts only.
+- **No quality promises.** The backend returns the single progressive rendition Instagram lists, chosen for having sound, not for resolution (see KNOWN_ISSUES.md, "Quality selector"); no resolution has been measured. So no "original quality", "HD", "1080p", "Full HD", "4K" or "high-resolution" anywhere (`qualityClaims.test.tsx` checks). What the code does verify: photos and videos reach the user as Instagram's own files — streamed as-is, or joined to their separate sound with ffmpeg `-c copy`, which doesn't re-encode. So copy says "Instagram-provided files" and "no added compression", always scoped to photos and videos, because Download Audio (MP3) is a re-encode (AAC to MP3 with libmp3lame).
+- **MP3 claims are verified, so they stay.** Checked against production on 2026-11-03 with the request the site itself builds (`/download?…&format=mp3`): 200, `audio/mpeg`, a `.mp3` attachment of 298 MPEG-1 Layer III frames (44.1 kHz stereo, 192 kbps), 7.8 s for a 7.9 s Reel; `format=wav` is refused with 400. A Reel with no sound gets a 422 "This reel has no audio to download." (read in the code, not reproduced live). `siteContent.test.tsx` keeps MP3 in the description. No copy targets audio-download searches beyond describing the feature, and nothing claims watermark removal.
+- **`siteConfig.appName` is separate from `title`**, so retuning the search title never renames the installed PWA.
+- **Every indexable subpage sets its own Open Graph/Twitter card** through `lib/pageMetadata.ts`, image included: a page that sets `openGraph` no longer gets the root `opengraph-image.tsx` (confirmed in the built HTML).
+- **FAQ answers are in the server-rendered HTML.** Radix leaves a closed accordion panel empty, so the answers used to exist only in the FAQPage JSON-LD. `AccordionContent keepMounted` (FAQ only) keeps them in the DOM, hidden with `visibility: hidden` while closed.
 
 ## Targets
 

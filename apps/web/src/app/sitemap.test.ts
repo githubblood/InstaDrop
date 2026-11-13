@@ -12,9 +12,9 @@ describe("sitemap", () => {
 
   it("reports each page's real last change, not the time of the request", () => {
     expect(sitemap().map((entry) => entry.lastModified)).toEqual([
-      "2026-10-19",
-      "2026-10-19",
-      "2026-09-26",
+      "2026-11-03",
+      "2026-11-03",
+      "2026-11-13",
       "2026-10-19",
       "2026-10-19",
     ]);

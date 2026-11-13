@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { LegalPageShell } from "@/components/legal/LegalPageShell";
 import { LegalSection } from "@/components/legal/LegalSection";
 import { formatLegalDate, PRIVACY_POLICY_UPDATED } from "@/lib/legalDates";
+import { pageMetadata } from "@/lib/pageMetadata";
 import { siteConfig } from "@/lib/siteConfig";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description: `How ${siteConfig.name} handles data: what we collect, what we don't, and why.`,
-  alternates: { canonical: "/privacy-policy" },
-};
+  path: "/privacy-policy",
+});
 
 // Shared with sitemap.ts, which reports it as this page's <lastmod>.
 const LAST_UPDATED = formatLegalDate(PRIVACY_POLICY_UPDATED);

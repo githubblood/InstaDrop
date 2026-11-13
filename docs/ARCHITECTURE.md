@@ -53,7 +53,7 @@ reelsavenow-monorepo/
 
 ## Branding: single source of truth (`siteConfig.ts`)
 
-`apps/web/src/lib/siteConfig.ts` owns every piece of branding text that appears in more than one place — `name`, `title`, `description`, `tagline`, and `url`. A rename or tagline change should be a one-line edit here, not a find-and-replace. Audited and centralized 2026-08-05; before that pass, the name was hardcoded in seven separate places.
+`apps/web/src/lib/siteConfig.ts` owns every piece of branding text that appears in more than one place — `name`, `title`, `appName`, `description`, `tagline`, and `url`. A rename or tagline change should be a one-line edit here, not a find-and-replace. Audited and centralized 2026-08-05; before that pass, the name was hardcoded in seven separate places.
 
 **Consumers (all read from `siteConfig`, none hold a literal):**
 
@@ -61,7 +61,7 @@ reelsavenow-monorepo/
 siteConfig.ts
   |-- app/layout.tsx            title/description, OG + Twitter tags,
   |                              appleWebApp.title, WebApplication JSON-LD
-  |-- app/manifest.ts           name / short_name / description
+  |-- app/manifest.ts           appName / name (short_name) / description
   |-- app/opengraph-image.tsx   rendered name + tagline
   |-- app/robots.ts             sitemap URL
   |-- app/sitemap.ts            all route URLs
