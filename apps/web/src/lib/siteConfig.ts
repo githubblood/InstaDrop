@@ -1,3 +1,32 @@
+/** The address search engines should index: www, which the apex forwards to (see docs/DEPLOYMENT.md). */
+export const CANONICAL_SITE_URL = "https://www.reelsavenow.com";
+
+/**
+ * The site URL behind every canonical, og:url, JSON-LD url, sitemap <loc> and
+ * the robots.txt Sitemap line. NEXT_PUBLIC_SITE_URL can still point another
+ * deployment at its own domain, but Amplify's default *.amplifyapp.com host
+ * is never used: production was built with it in November 2026, and every
+ * one of those URLs then named it instead of www. Returns the origin only,
+ * so a trailing slash or path can't produce "//sitemap.xml".
+ */
+export function resolveSiteUrl(value: string | undefined): string {
+  const trimmed = value?.trim();
+  if (!trimmed) return CANONICAL_SITE_URL;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    return CANONICAL_SITE_URL;
+  }
+
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return CANONICAL_SITE_URL;
+  if (parsed.hostname === "amplifyapp.com" || parsed.hostname.endsWith(".amplifyapp.com")) {
+    return CANONICAL_SITE_URL;
+  }
+  return parsed.origin;
+}
+
 export const siteConfig = {
   name: "ReelSaveNow",
   // The homepage <title>, og:title and twitter:title. Leads with the search
@@ -17,5 +46,5 @@ export const siteConfig = {
   tagline: "Download Instagram Reels, videos & photos",
   // www is the canonical host: the apex can't point at Amplify from
   // GoDaddy DNS and is forwarded to www (see docs/DEPLOYMENT.md).
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.reelsavenow.com",
+  url: resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
 } as const;
