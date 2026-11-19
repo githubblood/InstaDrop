@@ -32,7 +32,7 @@ Nobody has recorded these from the consoles yet: the Amplify app's build setting
 
 | Where | Variable | Value | Status (from outside) |
 |---|---|---|---|
-| Amplify environment variables | `NEXT_PUBLIC_SITE_URL` | `https://www.reelsavenow.com` — never the `amplifyapp.com` address, or canonicals, the sitemap, robots.txt and JSON-LD point search engines there. Built into the bundle, so a change needs a rebuild. | Not yet: live pages still name the Amplify address |
+| Amplify environment variables | `NEXT_PUBLIC_SITE_URL` | `https://www.reelsavenow.com`. An `amplifyapp.com` value is ignored and www is used instead (`resolveSiteUrl` in `siteConfig.ts`), so canonicals, the sitemap, robots.txt and JSON-LD can't name the Amplify address. Built into the bundle, so a change needs a rebuild. | Not yet: the 2026-11-13 build names the Amplify address |
 | Amplify environment variables | `NEXT_PUBLIC_API_BASE_URL` | `https://api.reelsavenow.com/api/v1` | Matches what the live bundle calls |
 | API host | `CORS_ORIGIN` | Must include `https://www.reelsavenow.com`; without it the browser blocks every fetch and download on the real domain while the site itself loads normally. The Amplify origin can stay alongside it. | Matches: www is allowed |
 

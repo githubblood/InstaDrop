@@ -16,7 +16,7 @@ SEO is built in from day one, not an afterthought.
 
 ## Site config
 
-`apps/web/src/lib/siteConfig.ts` is the single source of truth for the site's branding — canonical URL (`NEXT_PUBLIC_SITE_URL`, defaults to `https://www.reelsavenow.com`), `name`, `title`, `appName`, `description`, and `tagline`. See [ARCHITECTURE.md](./ARCHITECTURE.md#branding-single-source-of-truth-siteconfigts) for the full list of consumers and the two deliberate exceptions.
+`apps/web/src/lib/siteConfig.ts` is the single source of truth for the site's branding — canonical URL (`NEXT_PUBLIC_SITE_URL`, defaults to `https://www.reelsavenow.com`, which also replaces any `*.amplifyapp.com` value), `name`, `title`, `appName`, `description`, and `tagline`. See [ARCHITECTURE.md](./ARCHITECTURE.md#branding-single-source-of-truth-siteconfigts) for the full list of consumers and the two deliberate exceptions.
 
 ## Keyword map — 2026-11-03
 
